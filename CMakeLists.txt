@@ -1,38 +1,31 @@
-project(plugin-examples)
-cmake_minimum_required(VERSION 3.1)
-enable_language(CXX Fortran)
+cmake_minimum_required(VERSION 3.11)
+
+project(plugin-examples CXX Fortran)
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(plugin-example-1 plugin-example-1.cpp PluginGuest.cpp FCIdump.cpp)
-add_executable(plugin-example-2 plugin-example-2.F90 PluginGuestF.F90 FCIdumpF.F90 FCIdump.cpp)
-add_executable(plugin-example-3 plugin-example-3.cpp PluginGuest.cpp)
-add_executable(PluginHost PluginHost.cpp)
+
+########## Dependencies ##########
 
 find_package(MPI REQUIRED)
 
-include_directories(${MPI_INCLUDE_PATH})
+include(FetchContent)
+file(STRINGS "dependencies/FCIdump_SHA1" FCIdump_GIT_TAG)
+message("FCIdump_GIT_TAG = ${FCIdump_GIT_TAG}")
+FetchContent_Declare(
+        fcidump_dep
+        SOURCE_DIR "${CMAKE_SOURCE_DIR}/dependencies/FCIdump"
+        GIT_REPOSITORY https://mxs531@bitbucket.org/pjknowles/fcidump.git
+        GIT_TAG ${FCIdump_GIT_TAG}
+)
 
-target_link_libraries(plugin-example-1 ${MPI_LIBRARIES})
-target_link_libraries(plugin-example-2 ${MPI_Fortran_LIBRARIES})
-target_link_libraries(plugin-example-3 ${MPI_LIBRARIES})
-target_link_libraries(PluginHost ${MPI_LIBRARIES})
 
-if(MPI_COMPILE_FLAGS)
-  set_target_properties(plugin-example-1 PROPERTIES COMPILE_FLAGS "${MPI_COMPILE_FLAGS}")
-  set_target_properties(plugin-example-2 PROPERTIES COMPILE_FLAGS "${MPI_Fortran_COMPILE_FLAGS}")
-  set_target_properties(plugin-example-3 PROPERTIES COMPILE_FLAGS "${MPI_COMPILE_FLAGS}")
-  set_target_properties(PluginHost PROPERTIES COMPILE_FLAGS "${MPI_COMPILE_FLAGS}")
-endif()
+########## Targets ##########
 
-if(MPI_LINK_FLAGS)
-if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-set(MPI_Fortran_LINK_FLAGS "${MPI_Fortran_LINK_FLAGS} -l mpifort")
-endif()
-  set_target_properties(plugin-example-1 PROPERTIES LINK_FLAGS "${MPI_LINK_FLAGS}")
-  set_target_properties(plugin-example-2 PROPERTIES LINK_FLAGS "${MPI_Fortran_LINK_FLAGS}")
-  set_target_properties(plugin-example-3 PROPERTIES LINK_FLAGS "${MPI_LINK_FLAGS}")
-  set_target_properties(PluginHost PROPERTIES LINK_FLAGS "${MPI_LINK_FLAGS}")
-endif()
+add_subdirectory(lib)
+add_subdirectory(example)
+
+
+########## Documentation ##########
 
 find_package(Doxygen)
 if(DOXYGEN_FOUND)

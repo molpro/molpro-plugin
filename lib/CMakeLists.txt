@@ -1,0 +1,19 @@
+FetchContent_GetProperties(fcidump_dep)
+if (NOT fcidump_dep_POPULATED)
+    FetchContent_Populate(fcidump_dep)
+    add_subdirectory(${fcidump_dep_SOURCE_DIR} ${fcidump_dep_BINARY_DIR} EXCLUDE_FROM_ALL)
+endif ()
+
+add_library(molpro_plugin STATIC PluginGuest.cpp PluginGuest.h PluginGuestF.F90)
+target_link_libraries(molpro_plugin PUBLIC FCIdump)
+### Header files for C
+target_include_directories(molpro_plugin INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
+### Library for linking Fortran
+target_include_directories(molpro_plugin INTERFACE ${CMAKE_CURRENT_BINARY_DIR})
+
+if (MPI_CXX_FOUND AND MPI_Fortran_FOUND)
+    if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+        set(MPI_Fortran_LINK_FLAGS "${MPI_Fortran_LINK_FLAGS} -l mpifort")
+    endif ()
+    target_link_libraries(molpro_plugin PUBLIC MPI::MPI_CXX MPI::MPI_Fortran)
+endif ()
