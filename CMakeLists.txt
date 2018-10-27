@@ -14,7 +14,7 @@ message("FCIdump_GIT_TAG = ${FCIdump_GIT_TAG}")
 FetchContent_Declare(
         fcidump_dep
         SOURCE_DIR "${CMAKE_SOURCE_DIR}/dependencies/FCIdump"
-        GIT_REPOSITORY https://mxs531@bitbucket.org/pjknowles/fcidump.git
+        GIT_REPOSITORY git@bitbucket.org:pjknowles/fcidump.git
         GIT_TAG ${FCIdump_GIT_TAG}
 )
 
