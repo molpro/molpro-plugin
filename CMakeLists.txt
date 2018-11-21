@@ -9,7 +9,7 @@ endif ()
 if (MOLPRO_PLUGIN_FORTRAN)
     enable_language(Fortran)
 endif ()
-message("Configure ${CMAKE_CURRENT_SOURCE_DIR} for ${CMAKE_PROJECT_NAME} with CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} Fortran compiler=${CMAKE_Fortran_COMPILER_ID}")
+message("Configure ${CMAKE_CURRENT_SOURCE_DIR} for ${CMAKE_PROJECT_NAME} with CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} Fortran compiler=${CMAKE_Fortran_COMPILER}")
 
 ########## Dependencies ##########
 
