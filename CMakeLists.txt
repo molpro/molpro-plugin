@@ -1,12 +1,10 @@
 cmake_minimum_required(VERSION 3.11)
 
-project(plugin-examples CXX)
+project(molpro_plugin VERSION 1.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 14)
 
-if (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
-    option(MOLPRO_PLUGIN_FORTRAN "Whether to build fortran binding" ON)
-endif ()
-if (MOLPRO_PLUGIN_FORTRAN)
+option(FORTRAN "Whether to build fortran binding" ON)
+if (FORTRAN)
     enable_language(Fortran)
 endif ()
 message("Configure ${CMAKE_CURRENT_SOURCE_DIR} for ${CMAKE_PROJECT_NAME} with CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} Fortran compiler=${CMAKE_Fortran_COMPILER}")
