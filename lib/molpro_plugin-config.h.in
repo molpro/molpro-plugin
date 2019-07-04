@@ -1,0 +1,11 @@
+#ifndef MOLPRO_PLUGIN_CONFIG_H
+#define MOLPRO_PLUGIN_CONFIG_H
+#ifndef HAVE_MPI_H
+#cmakedefine HAVE_MPI_H
+#endif
+#cmakedefine MOLPRO_PLUGIN_FORTRAN
+#cmakedefine MOLPRO_PLUGIN_I8
+#ifndef MOLPRO
+#cmakedefine MOLPRO
+#endif
+#endif
