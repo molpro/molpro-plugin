@@ -2,10 +2,22 @@ cmake_minimum_required(VERSION 3.11)
 
 project(molpro_plugin VERSION 1.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 14)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
+include(libconfig)
 
 option(FORTRAN "Whether to build fortran binding" ON)
 if (FORTRAN)
     enable_language(Fortran)
+    message("Configuring Fortran support for ${CMAKE_CURRENT_SOURCE_DIR}")
+    include(CheckFortranCompilerFlag)
+    foreach (f "-fdefault-integer-8" "-i8")
+        CHECK_Fortran_COMPILER_FLAG(${f} _fortran_flags)
+        if (_fortran_flags)
+            set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} ${f}")
+        endif ()
+        unset(_fortran_flags CACHE)
+    endforeach ()
 endif ()
 message("Configure ${CMAKE_CURRENT_SOURCE_DIR} for ${CMAKE_PROJECT_NAME} with CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} Fortran compiler=${CMAKE_Fortran_COMPILER}")
 
@@ -13,15 +25,7 @@ message("Configure ${CMAKE_CURRENT_SOURCE_DIR} for ${CMAKE_PROJECT_NAME} with CM
 
 find_package(MPI REQUIRED)
 
-include(FetchContent)
-file(STRINGS "dependencies/FCIdump_SHA1" FCIdump_GIT_TAG)
-FetchContent_Declare(
-        fcidump_dep
-        SOURCE_DIR "${CMAKE_SOURCE_DIR}/dependencies/FCIdump"
-        GIT_REPOSITORY git@bitbucket.org:pjknowles/fcidump.git
-        GIT_TAG ${FCIdump_GIT_TAG}
-)
-
+add_subdirectory(dependencies)
 
 ########## Targets ##########
 

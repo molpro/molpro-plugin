@@ -1,5 +1,4 @@
-include(libconfig.cmake)
-get_dependency(ON fcidump_dep)
+get_dependency(fcidump)
 list(APPEND DEPENDENCIES FCIdump)
 
 if (CMAKE_Fortran_COMPILER_ID)
