@@ -1,4 +1,4 @@
-get_dependency(FCIdump)
+get_dependency(fcidump)
 list(APPEND DEPENDENCIES FCIdump)
 
 if (CMAKE_Fortran_COMPILER_ID)
