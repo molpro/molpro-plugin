@@ -1,3 +1,4 @@
+unset(DEPENDENCIES)
 get_dependency(fcidump)
 list(APPEND DEPENDENCIES FCIdump)
 
