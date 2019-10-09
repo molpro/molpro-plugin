@@ -58,7 +58,7 @@ extern "C" {
   void PluginGuestOpen(const char* host);
   int PluginGuestActive();
   int PluginGuestSend(const char* value);
-  const char* PluginGuestReceive();
+  void PluginGuestReceive(char * string, size_t length);
   void PluginGuestClose();
 }
 
