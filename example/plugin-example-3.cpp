@@ -22,11 +22,11 @@ int main(int argc, char *argv[])
       printf("Molpro plugin has been initialised\n");
   }
 
-  const char* fcidumpname;
+  char fcidumpname[1024];
   if (PluginGuestActive()) {
     // ask for an FCIDUMP
     PluginGuestSend("GIVE OPERATOR HAMILTONIAN FCIDUMP");
-    fcidumpname = PluginGuestReceive();
+    PluginGuestReceive(fcidumpname,1024);
     if (rank==0)
       printf("Obtained reference to hamiltonian FCIdump: %s\n",fcidumpname);
   }
