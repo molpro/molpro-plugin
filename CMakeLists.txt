@@ -1,47 +1,31 @@
-cmake_minimum_required(VERSION 3.11)
-
-project(molpro_plugin VERSION 1.0 LANGUAGES CXX)
-set(CMAKE_CXX_STANDARD 14)
-
-option(FORTRAN "Whether to build fortran binding" ON)
-if (FORTRAN)
-    enable_language(Fortran)
-endif ()
-message("Configure ${CMAKE_CURRENT_SOURCE_DIR} for ${CMAKE_PROJECT_NAME} with CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} Fortran compiler=${CMAKE_Fortran_COMPILER}")
-
-########## Dependencies ##########
-
-find_package(MPI REQUIRED)
+cmake_minimum_required(VERSION 3.15)
+project(molpro_plugin LANGUAGES CXX)
 
 include(FetchContent)
-file(STRINGS "dependencies/FCIdump_SHA1" FCIdump_GIT_TAG)
 FetchContent_Declare(
-        fcidump_dep
-        SOURCE_DIR "${CMAKE_SOURCE_DIR}/dependencies/FCIdump"
-        GIT_REPOSITORY git@bitbucket.org:pjknowles/fcidump.git
-        GIT_TAG ${FCIdump_GIT_TAG}
+        LibraryManager
+        GIT_REPOSITORY https://gitlab+deploy-token-178345:RQZa2rmdwnV7Hdwg8XEq@gitlab.com/molpro/LibraryManager.git
+        GIT_TAG master
 )
+FetchContent_MakeAvailable(LibraryManager)
 
+LibraryManager_Project(FORTRAN_OPTION)
 
-########## Targets ##########
+add_subdirectory(dependencies)
 
-add_subdirectory(lib)
-add_subdirectory(example)
+add_subdirectory(src)
 
+if (${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME})
+    add_subdirectory(examples)
+    enable_testing()
+    add_subdirectory(test)
+endif ()
 
-########## Documentation ##########
+# Documentation has to come last to make sure all dependencies have been added
+include(DependencyManagerDocs)
 
-find_package(Doxygen)
-if (DOXYGEN_FOUND)
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.src ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
-    add_custom_target(${PROJECT_NAME}-doc ALL
-            DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/html/index.html
-            )
-    file(GLOB headers lib/*.h lib/*.F90)
-    add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/html/index.html
-            COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
-            DEPENDS ${SRC_LIST} ${headers} ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
-            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-            COMMENT "Generating API documentation with Doxygen" VERBATIM
-            )
-endif (DOXYGEN_FOUND)
+DependencyManagerDocs_Add(${PROJECT_NAME}
+        FILES README.md
+        DOC_URL "https://molpro.gitlab.io/library-template/${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
+        DEPENDS FCIdump # projects whose documentation has to be built before current project.
+        )

@@ -5,7 +5,9 @@
 #include <string>
 #include <vector>
 
-/** @example plugin-example-1.cpp */
+namespace molpro {
+
+/** @example plugin-examples-1.cpp */
 /*!
  * \brief Supports the communication of a plugin that has been launched via MPI_Comm_spawn.
  * The communication is driven by the host, and follows the following convention.
@@ -20,18 +22,18 @@
  * 	obeys according to further conventions established between the two programs.
  *   -# The guest indicates termination by sending an empty string.
  *
- *   Example of use: @include plugin-example-1.cpp
+ *   Example of use: @include plugin-examples-1.cpp
  */
 class PluginGuest {
-public:
+ public:
   /*!
    * \brief Construct a plugin guest instance
    * \param host is the name that the host program is expected to offer to identify itself. If the parameter is not given, then no check is performed.
    * \param world is the world MPI communicator. All functions are collective across all processes in this communicator.
    */
-  PluginGuest(const std::string host="", const MPI_Comm world=MPI_COMM_WORLD);
+  PluginGuest(const std::string host = "", const MPI_Comm world = MPI_COMM_WORLD);
   ~PluginGuest() { close(); }
-  bool active() const { return m_active;} ///< Whether the plugin is active or not
+  bool active() const { return m_active; } ///< Whether the plugin is active or not
   std::string receive() const; ///< Receive a string from the host.
   /*!
    * \brief Send a string to the host
@@ -43,7 +45,7 @@ public:
    * \brief Close down the plugin. Called by the class destructor.
    */
   void close();
-private:
+ private:
   MPI_Comm m_intercomm; ///< the intercommunicator to the parent
   MPI_Comm m_world; ///< the guest's world communicator
   int m_active; ///< whether this Molpro plugin framework is active
@@ -53,14 +55,15 @@ private:
   std::string m_outputFile; ///< the file on which standard output is written
 };
 
-// pure C interface
-extern "C" {
-  void PluginGuestOpen(const char* host);
-  int PluginGuestActive();
-  int PluginGuestSend(const char* value);
-  const char* PluginGuestReceive();
-  void PluginGuestClose();
 }
 
+// pure C interface
+extern "C" {
+void PluginGuestOpen(const char* host);
+int PluginGuestActive();
+int PluginGuestSend(const char* value);
+const char* PluginGuestReceive();
+void PluginGuestClose();
+}
 
 #endif // PLUGINGUEST_H
