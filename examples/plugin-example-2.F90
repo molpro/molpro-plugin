@@ -1,7 +1,7 @@
 PROGRAM plugin_example_2
  USE PluginGuestF
  USE FCIdumpF
- USE iso_fortran_env
+ USE iso_fortran_env, ONLY : output_unit
  IMPLICIT NONE
 #include "mpif.h"
  CHARACTER(1024) :: fcidumpname, filename, datafilename

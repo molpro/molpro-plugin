@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(molpro_plugin LANGUAGES CXX)
+project(molpro-plugin LANGUAGES CXX)
 
 include(FetchContent)
 FetchContent_Declare(
