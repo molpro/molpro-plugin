@@ -1,5 +1,5 @@
-molpro-plugin {#mainpage}
-=========================
+molpro-plugin
+=============
 
 This library gives support for programs launched from Molpro.
 
