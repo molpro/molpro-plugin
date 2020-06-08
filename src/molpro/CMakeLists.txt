@@ -18,7 +18,7 @@ if (MPI_CXX_FOUND)
     target_compile_definitions(${PROJECT_NAME} PUBLIC HAVE_MPI)
     if (CMAKE_Fortran_COMPILER_ID AND MPI_Fortran_FOUND)
         message(STATUS "MPI_Fortran")
-        target_link_libraries(molpro_plugin PUBLIC MPI::MPI_Fortran)
+        target_link_libraries(molpro-plugin PUBLIC MPI::MPI_Fortran)
     endif ()
 endif ()
 
