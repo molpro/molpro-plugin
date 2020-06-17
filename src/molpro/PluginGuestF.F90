@@ -1,6 +1,6 @@
 !>\brief Supports the communication of a plugin that has been launched via MPI_Comm_spawn.
 !> See the documentation of the C++ PluginGuest class.
-!> Example of use: @include plugin-examples-2.F90
+!> Example of use: @include plugin-example-2.F90
 MODULE PluginGuestF
  IMPLICIT NONE
 #include "mpif.h"

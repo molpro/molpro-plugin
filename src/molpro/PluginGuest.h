@@ -7,7 +7,7 @@
 
 namespace molpro {
 
-/** @example plugin-examples-1.cpp */
+/** @example plugin-example-1.cpp */
 /*!
  * \brief Supports the communication of a plugin that has been launched via MPI_Comm_spawn.
  * The communication is driven by the host, and follows the following convention.
@@ -22,7 +22,7 @@ namespace molpro {
  * 	obeys according to further conventions established between the two programs.
  *   -# The guest indicates termination by sending an empty string.
  *
- *   Example of use: @include plugin-examples-1.cpp
+ *   Example of use: @include plugin-example-1.cpp
  */
 class PluginGuest {
  public:
