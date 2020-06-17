@@ -3,7 +3,7 @@ LibraryManager_Append(${PROJECT_NAME}
         SOURCES PluginGuest.cpp
         PUBLIC_HEADER PluginGuest.h
         )
-if (CMAKE_Fortran_COMPILER AND MPI_Fortran_FOUND)
+if (FORTRAN)
     LibraryManager_Append(${PROJECT_NAME}
             SOURCES PluginGuestF.F90
             )
@@ -16,7 +16,7 @@ if (MPI_CXX_FOUND)
     message(STATUS "MPI_CXX")
     target_link_libraries(${PROJECT_NAME} PUBLIC MPI::MPI_CXX)
     target_compile_definitions(${PROJECT_NAME} PUBLIC HAVE_MPI)
-    if (CMAKE_Fortran_COMPILER_ID AND MPI_Fortran_FOUND)
+    if (FORTRAN)
         message(STATUS "MPI_Fortran")
         target_link_libraries(molpro-plugin PUBLIC MPI::MPI_Fortran)
     endif ()

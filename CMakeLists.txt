@@ -10,7 +10,6 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(LibraryManager)
 
 LibraryManager_Project(FORTRAN_OPTION)
-option(NOFORTRAN "Force Fortran configuration off" OFF)
 
 add_subdirectory(dependencies)
 
