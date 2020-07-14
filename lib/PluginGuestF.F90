@@ -2,6 +2,7 @@
 !> See the documentation of the C++ PluginGuest class.
 !> Example of use: @include plugin-example-2.F90
 MODULE PluginGuestF
+ USE iso_c_binding, ONLY : c_null_char,c_int
  IMPLICIT NONE
 #include "mpif.h"
  PRIVATE
@@ -25,7 +26,7 @@ CONTAINS
   INTEGER :: size
   INTEGER :: ierr
   CHARACTER(1024) :: id
-  INTEGER :: length
+  INTEGER(KIND=c_int) :: length
   INTEGER, DIMENSION(MPI_Status_size) :: status
   m_active=.FALSE.
   if (present(world)) then
@@ -37,8 +38,8 @@ CONTAINS
   CALL MPI_Comm_get_parent(m_intercomm, ierr)
   IF (m_rank.EQ.0 .AND. m_intercomm .NE. MPI_COMM_NULL) THEN
 ! expect plugin server to identify itself
-   CALL MPI_Recv(length,1,MPI_INT,0,0,m_intercomm,status,ierr)
-   CALL MPI_Recv(id,length,MPI_CHAR,0,1,m_intercomm,status,ierr)
+   CALL MPI_Recv(transfer(length,c_null_char),1,MPI_INT,0,0,m_intercomm,status,ierr)
+   CALL MPI_Recv(transfer(id,c_null_char),INT(length),MPI_CHAR,0,1,m_intercomm,status,ierr)
    id(length:)=' '
    length = INDEX(id,' ')-1
    ALLOCATE(CHARACTER(MAX(length,1)) :: m_host)
@@ -72,14 +73,14 @@ CONTAINS
    END IF
   END IF
   length = len_TRIM(m_host)
-  CALL MPI_Bcast(length,1,MPI_INT,0,m_world,ierr)
+  CALL MPI_Bcast(transfer(length,c_null_char),1,MPI_INT,0,m_world,ierr)
   IF (m_rank.NE.0) ALLOCATE(CHARACTER(MAX(length,1)) :: m_host)
-  CALL MPI_Bcast(m_host,length,MPI_CHAR,0,m_world,ierr)
+  CALL MPI_Bcast(transfer(m_host,c_null_char),INT(length),MPI_CHAR,0,m_world,ierr)
   length = len_TRIM(m_hostVersion)
-  CALL MPI_Bcast(length,1,MPI_INT,0,m_world,ierr)
+  CALL MPI_Bcast(transfer(length,c_null_char),1,MPI_INT,0,m_world,ierr)
   IF (m_rank.NE.0) ALLOCATE(CHARACTER(MAX(length,1)) :: m_hostVersion)
-  CALL MPI_Bcast(m_hostVersion,length,MPI_CHAR,0,m_world,ierr)
-  CALL MPI_Bcast(m_active,1,MPI_LOGICAL,0,m_world,ierr)
+  CALL MPI_Bcast(transfer(m_hostVersion,c_null_char),INT(length),MPI_CHAR,0,m_world,ierr)
+  CALL MPI_Bcast(transfer(m_active,c_null_char),1,MPI_LOGICAL,0,m_world,ierr)
  END SUBROUTINE PluginGuestF_open
 
  FUNCTION PluginGuestF_active()
@@ -93,33 +94,33 @@ CONTAINS
   CHARACTER(len=:), ALLOCATABLE :: PluginGuestF_receive
   INTEGER, DIMENSION(MPI_Status_size) :: status
   INTEGER :: ierr
-  INTEGER :: length
-  IF (m_rank.EQ.0) CALL MPI_Recv(length,1,MPI_INT,0,0,m_intercomm,status,ierr)
-  CALL MPI_Bcast(length,1,MPI_INT,0,m_world,ierr)
+  INTEGER(KIND=c_int) :: length
+  IF (m_rank.EQ.0) CALL MPI_Recv(transfer(length,c_null_char),1,MPI_INT,0,0,m_intercomm,status,ierr)
+  CALL MPI_Bcast(transfer(length,c_null_char),1,MPI_INT,0,m_world,ierr)
   ALLOCATE(CHARACTER(length) :: PluginGuestF_receive)
-  IF (m_rank.EQ.0) CALL MPI_Recv(PluginGuestF_receive,length,MPI_INT,0,1,m_intercomm,status,ierr)
-  CALL MPI_Bcast(PluginGuestF_receive,length,MPI_CHAR,0,m_world,ierr)
+  IF (m_rank.EQ.0) CALL MPI_Recv(transfer(PluginGuestF_receive,c_null_char),INT(length),MPI_INT,0,1,m_intercomm,status,ierr)
+  CALL MPI_Bcast(transfer(PluginGuestF_receive,c_null_char),INT(length),MPI_CHAR,0,m_world,ierr)
  END FUNCTION PluginGuestF_receive
 
  FUNCTION PluginGuestF_send(value)
-  USE iso_c_binding, ONLY : c_null_char
   IMPLICIT NONE
   LOGICAL :: PluginGuestF_send
   CHARACTER(*), INTENT(in) :: value
-  INTEGER :: length, answer, ierr
+  INTEGER(KIND=c_int) :: length, answer
+  INTEGER :: ierr
   INTEGER, DIMENSION(MPI_Status_size) :: status
   PluginGuestF_send=.TRUE.
   IF (.NOT. m_active) RETURN
   length=len_TRIM(value)!+1
-  CALL MPI_Bcast(length,1,MPI_INT,0,m_world,ierr)
-  IF (m_rank.EQ.0) CALL MPI_Send(length,1,MPI_INT,0,0,m_intercomm,ierr)
+  CALL MPI_Bcast(transfer(length,c_null_char),1,MPI_INT,0,m_world,ierr)
+  IF (m_rank.EQ.0) CALL MPI_Send(transfer(length,c_null_char),1,MPI_INT,0,0,m_intercomm,ierr)
   IF (length.LE.0) RETURN
-  IF (m_rank.EQ.0) CALL MPI_Recv(answer,1,MPI_INT,0,0,m_intercomm,status,ierr)
-  CALL MPI_Bcast(answer,1,MPI_INT,0,m_world,ierr)
+  IF (m_rank.EQ.0) CALL MPI_Recv(transfer(answer,c_null_char),1,MPI_INT,0,0,m_intercomm,status,ierr)
+  CALL MPI_Bcast(transfer(answer,c_null_char),1,MPI_INT,0,m_world,ierr)
   IF (answer.EQ.0) THEN
    PluginGuestF_send=.FALSE.
   ELSE
-   IF (m_rank.EQ.0) CALL MPI_Send(TRIM(value),length,MPI_CHAR,0,1,m_intercomm,ierr)
+   IF (m_rank.EQ.0) CALL MPI_Send(transfer(TRIM(value),c_null_char),INT(length),MPI_CHAR,0,1,m_intercomm,ierr)
   END IF
 
  END FUNCTION PluginGuestF_send
