@@ -5,7 +5,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <sstream>
-PluginGuest::PluginGuest(const std::string host, const MPI_Comm world)
+molpro::PluginGuest::PluginGuest(const std::string host, const MPI_Comm world)
   : m_world(world)
 {
   MPI_Comm_rank(m_world,&m_rank);
@@ -50,7 +50,7 @@ PluginGuest::PluginGuest(const std::string host, const MPI_Comm world)
   }
 }
 
-bool PluginGuest::send(const std::string value) const
+bool molpro::PluginGuest::send(const std::string value) const
 {
   if (! m_active) return true;
   int answer;
@@ -69,7 +69,7 @@ bool PluginGuest::send(const std::string value) const
   return answer>0 || length==0 ;
 }
 
-std::string PluginGuest::receive() const
+std::string molpro::PluginGuest::receive() const
 {
   if (! m_active) return "";
   MPI_Status status;
@@ -85,7 +85,7 @@ std::string PluginGuest::receive() const
   return result;
 }
 
-void PluginGuest::close()
+void molpro::PluginGuest::close()
 {
   fflush(stdout);
   send("");
@@ -94,8 +94,8 @@ void PluginGuest::close()
 
 // pure C interface
 #include <memory>
-static std::shared_ptr<PluginGuest> guest = nullptr;
-void PluginGuestOpen(const char* host) { guest = std::make_shared<PluginGuest>(std::string(host)); }
+static std::shared_ptr<molpro::PluginGuest> guest = nullptr;
+void PluginGuestOpen(const char* host) { guest = std::make_shared<molpro::PluginGuest>(std::string(host)); }
 int PluginGuestActive() { return guest!=nullptr && guest->active() ? 1 : 0;}
 int PluginGuestSend(const char* value) { return guest->send(std::string(value)) ? 1 : 0 ; }
 const char* PluginGuestReceive() { return guest->receive().c_str(); }

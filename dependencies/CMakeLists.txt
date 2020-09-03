@@ -1,5 +1,13 @@
-declare_dependency(googletest https://github.com/google/googletest.git)
+include(FetchContent)
+FetchContent_Declare(
+        dependency_manager
+        GIT_REPOSITORY https://gitlab.com/dependencymanager/dependency-manager.git
+        GIT_TAG 0.1.5
+)
+FetchContent_MakeAvailable(dependency_manager)
+set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" PARENT_SCOPE)
 
-declare_dependency(FCIdump https://gitlab.com/molpro/fcidump.git)
-
-
+DependencyManager_Declare(
+        FCIdump
+        https://gitlab.com/molpro/FCIdump.git
+)

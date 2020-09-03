@@ -1,11 +1,11 @@
 #include "mpi.h"
-#include <PluginGuest.h>
+#include <molpro/PluginGuest.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
 #include <fcntl.h>
 #include <stdio.h>
-#include <FCIdump.h>
+#include <molpro/FCIdump.h>
 #include <vector>
 #include <stdexcept>
 #include <iostream>
@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
   MPI_Comm_rank(MPI_COMM_WORLD,&rank);
 
   {
-  PluginGuest molproPlugin; // the constructor attempts to establish communication
+  molpro::PluginGuest molproPlugin; // the constructor attempts to establish communication
 
   if (rank==0) {
     if (! molproPlugin.active())
@@ -33,14 +33,14 @@ int main(int argc, char *argv[])
     molproPlugin.send("GIVE OPERATOR HAMILTONIAN FCIDUMP");
     fcidumpname = molproPlugin.receive();
     if (rank == 0) {
-      FCIdump d(fcidumpname);
+      molpro::FCIdump d(fcidumpname);
       int norb = d.parameter("NORB",std::vector<int>(0))[0];
       int nelec = d.parameter("NELEC",std::vector<int>(0))[0];
       int ms2 = d.parameter("MS2",std::vector<int>(0))[0];
       printf("%d orbitals, %d electrons, spin multiplicity %d\n",norb,nelec,ms2+1);
       d.rewind();
       int i,j,k,l; double value;
-      while(d.nextIntegral(i,j,k,l,value)!=FCIdump::endOfFile)
+      while(d.nextIntegral(i,j,k,l,value)!=molpro::FCIdump::endOfFile)
 	printf("Integral %d %d %d %d %f\n",i,j,k,l,value);
     }
   }
@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
       printf("Warning: could not send density filename\n");
     if (rank==0)
     {
-      FCIdump d(fcidumpname);
+      molpro::FCIdump d(fcidumpname);
       // fill values in to d here
       d.write(filename);
     }
