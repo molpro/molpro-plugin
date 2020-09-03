@@ -1,6 +1,6 @@
 LibraryManager_Add(${PROJECT_NAME} NAMESPACE molpro)
 
-if (CMAKE_Fortran_COMPILER)
+if (FORTRAN)
     find_package(MPI COMPONENTS CXX Fortran REQUIRED)
 else ()
     find_package(MPI COMPONENTS CXX REQUIRED)
