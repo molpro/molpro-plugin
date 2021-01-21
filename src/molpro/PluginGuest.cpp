@@ -98,5 +98,5 @@ static std::shared_ptr<molpro::PluginGuest> guest = nullptr;
 void PluginGuestOpen(const char* host) { guest = std::make_shared<molpro::PluginGuest>(std::string(host)); }
 int PluginGuestActive() { return guest!=nullptr && guest->active() ? 1 : 0;}
 int PluginGuestSend(const char* value) { return guest->send(std::string(value)) ? 1 : 0 ; }
-const char* PluginGuestReceive() { return guest->receive().c_str(); }
+const char* PluginGuestReceive() { return strdup(guest->receive().c_str()); }
 void PluginGuestClose() { guest->close(); }
