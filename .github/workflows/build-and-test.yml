@@ -8,10 +8,8 @@ on:
 
 env:
   CMAKE_BUILD_TYPE: Release
-  AUTOCONF_TEST_TARGET:
 
 jobs:
-
 
   cmake-build:
     runs-on: ubuntu-latest
