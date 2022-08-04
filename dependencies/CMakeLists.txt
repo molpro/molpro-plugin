@@ -8,6 +8,6 @@ FetchContent_MakeAvailable(dependency_manager)
 set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" PARENT_SCOPE)
 
 DependencyManager_Declare(
-        FCIdump
-        https://gitlab.com/molpro/FCIdump.git
+        fcidump
+        https://github.com/molpro/fcidump.git
 )
