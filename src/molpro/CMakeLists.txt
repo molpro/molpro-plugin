@@ -23,5 +23,5 @@ if (MPI_CXX_FOUND)
 endif ()
 
 include(DependencyManager)
-DependencyManager_Populate(FCIdump)
-target_link_libraries(${PROJECT_NAME} PUBLIC molpro::FCIdump)
+DependencyManager_Populate(fcidump)
+target_link_libraries(${PROJECT_NAME} PUBLIC molpro::fcidump)

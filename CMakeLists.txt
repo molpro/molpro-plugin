@@ -4,8 +4,8 @@ project(molpro-plugin LANGUAGES CXX)
 include(FetchContent)
 FetchContent_Declare(
         LibraryManager
-        GIT_REPOSITORY https://gitlab+deploy-token-178345:RQZa2rmdwnV7Hdwg8XEq@gitlab.com/molpro/LibraryManager.git
-        GIT_TAG master
+        GIT_REPOSITORY https://github.com/molpro/library-manager.git
+        GIT_TAG 0.11.3
 )
 FetchContent_MakeAvailable(LibraryManager)
 
@@ -26,6 +26,6 @@ include(DependencyManagerDocs)
 
 DependencyManagerDocs_Add(${PROJECT_NAME}
         FILES README.md
-        DOC_URL "https://molpro.gitlab.io/library-template/${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
-        DEPENDS FCIdump # projects whose documentation has to be built before current project.
+        DOC_URL "https://molpro.github.io/${PROJECT_NAME}"
+        DEPENDS fcidump # projects whose documentation has to be built before current project.
         )
